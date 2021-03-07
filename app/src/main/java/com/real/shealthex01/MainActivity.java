@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity{
     private boolean bGoogleConnected = false;
 
     private Button btnStart;
-    //private Button btnPlay;
+    private Button btnPlay;
     private ProgressBar spinner;
     private PowerManager powerManager;
     private PowerManager.WakeLock wakeLock;
@@ -97,8 +97,7 @@ public class MainActivity extends AppCompatActivity{
         btnStart = findViewById(R.id.btnStart);
         btnStart.setText("Wait please ...");
         btnStart.setEnabled(false);
-        //btnPlay = findViewById(R.id.btnPlay);
-        //btnPlay.setEnabled(false);
+        btnPlay = findViewById(R.id.btnPlay);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +124,8 @@ public class MainActivity extends AppCompatActivity{
                         btnStart.setText("Stop");
                         //btnStart.setText(R.string.msg_stop);
                         bCheckStarted = true;
+                        btnPlay.setEnabled(true);
+
 
                         spinner.setVisibility(View.VISIBLE);
                         //화면이 꺼지지 않도록 설정합니다
@@ -138,6 +139,13 @@ public class MainActivity extends AppCompatActivity{
                             MainActivity.this.googleApiClient.connect();
                     }
                 }
+            }
+        });
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), com.real.shealthex01.Mental.class);
+                startActivity(intent);
             }
         });
     }

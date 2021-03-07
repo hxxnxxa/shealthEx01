@@ -79,18 +79,17 @@ limitations under the License.
             android:layout_gravity="center"
             android:textColor="@android:color/white" />
 
-        <!--
         <Button
-            android:background="@android:color/white"
             android:id="@+id/btnPlay"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:padding="3dp"
-            android:text="명상 시작"
+            android:text="명상시작"
+            android:enabled="false"
             android:layout_gravity="center"
             android:textColor="@android:color/white" />
-            -->
+
     </LinearLayout>
 </LinearLayout>
