@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     public static Context value_temp;
     public float value;
@@ -61,11 +61,9 @@ public class MainActivity extends AppCompatActivity{
     private List<String> missingPermission = new ArrayList<>();
 
     private boolean bCheckStarted = false;
-    private boolean bCheckStop = false;
     private boolean bGoogleConnected = false;
 
     private Button btnStart;
-    private Button btnPlay;
     private ProgressBar spinner;
     private PowerManager powerManager;
     private PowerManager.WakeLock wakeLock;
@@ -79,16 +77,13 @@ public class MainActivity extends AppCompatActivity{
 
         value_temp = this;
 
-        //심박패턴을 측정하는 동안 화면이 꺼지지 않도록 제어하기 위해 전원관리자를 얻어옵니다
         powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "WAKELOCK");
         initUI();
-        //필요한 권한을 얻었는지 확인하고, 얻지 않았다면 권한 요청을 하기 위한 코드를 호출합니다
         checkAndRequestPermissions();
     }
 
     private void initUI() {
-        //심박수를 측정하는 Google API의 호출을 위해 API 클라이언트를 초기화 합니다
         initGoogleApiClient();
 
         textMon = findViewById(R.id.textMon);
@@ -97,14 +92,12 @@ public class MainActivity extends AppCompatActivity{
         btnStart = findViewById(R.id.btnStart);
         btnStart.setText("Wait please ...");
         btnStart.setEnabled(false);
-        btnPlay = findViewById(R.id.btnPlay);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (bCheckStarted) {
-                    //btnStart.setText(R.string.msg_start);
-                    btnStart.setText("시작하기");
+                    btnStart.setText("START");
                     bCheckStarted = false;
 
                     unregisterFitnessDataListener();
@@ -114,38 +107,22 @@ public class MainActivity extends AppCompatActivity{
                     wakeLock.release();
 
                 } else {
-                    //버튼을 처음 클릭할 경우 Google API 클라이언트에 로그인이 되어있는 상태인지를 확인합니다.
-                    //만약 로그인이 되어 있는 상태라면,
                     if (bGoogleConnected == true) {
-                        //심박수를 측정하기 위한 API를 설정합니다
                         findDataSources();
-                        //심박수의 측정이 시작되면 심박수 정보를 얻을 콜백함수를 등록/설정하는 함수를 호출합니다
                         registerDataSourceListener(DataType.TYPE_HEART_RATE_BPM);
-                        btnStart.setText("Stop");
-                        //btnStart.setText(R.string.msg_stop);
+                        btnStart.setText("STOP");
                         bCheckStarted = true;
-                        btnPlay.setEnabled(true);
 
 
                         spinner.setVisibility(View.VISIBLE);
-                        //화면이 꺼지지 않도록 설정합니다
                         wakeLock.acquire();
 
                     }
-                    // Google API 클라이언트에 로그인이 되어 있지 않다면,
                     else {
-                        //Google API 클라이언트에 로그인 합니다
                         if (MainActivity.this.googleApiClient != null)
                             MainActivity.this.googleApiClient.connect();
                     }
                 }
-            }
-        });
-        btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), com.real.shealthex01.Mental.class);
-                startActivity(intent);
             }
         });
     }
@@ -157,13 +134,11 @@ public class MainActivity extends AppCompatActivity{
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
                 .addConnectionCallbacks(
                         new GoogleApiClient.ConnectionCallbacks() {
-
-                            //Google API 클라이언트의 로그인에 성공하면 호출이 되는 콜백입니다
                             @Override
                             public void onConnected(Bundle bundle) {
                                 Log.d(TAG, "initGoogleApiClient() onConnected good...");
                                 bGoogleConnected = true;
-                                btnStart.setText("심박수 확인");
+                                btnStart.setText("START");
                                 btnStart.setEnabled(true);
                             }
 
@@ -292,7 +267,6 @@ public class MainActivity extends AppCompatActivity{
 
     private void registerDataSourceListener(DataType dataType) {
         onDataPointListener = new OnDataPointListener() {
-            // 심박수가 측정되면 심박수를 얻어올 수 있는 콜백입니다
             @Override
             public void onDataPoint(DataPoint dataPoint) {
                 for (Field field : dataPoint.getDataType().getFields()) {
@@ -360,7 +334,6 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-
         Log.d(TAG, "onStart connect attempted");
     }
 
@@ -385,7 +358,6 @@ public class MainActivity extends AppCompatActivity{
                 if (!this.googleApiClient.isConnecting() && !this.googleApiClient.isConnected()) {
                     this.googleApiClient.connect();
                     Log.d(TAG, "onActivityResult googleApiClient.connect() attempted in background");
-
                 }
             }
         }
@@ -400,10 +372,7 @@ public class MainActivity extends AppCompatActivity{
 
                 if (spinner.getVisibility() == View.VISIBLE)
                     spinner.setVisibility(View.INVISIBLE);
-
-                Log.d(TAG,"Heart Beat Rate Value : " + value);
-                textMon.setText("현재 심박수 : " + value);
-                //textMon.setText("현재 감정상태를 측정 중...");
+                textMon.setText("Current your heart rate : " + value);
             }
         });
     }
