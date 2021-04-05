@@ -1,5 +1,5 @@
 # shealthEx01
-API : Google Fit Api
+API : Google Fit Api   
 You can measure your heart rate via this app.
  
  
